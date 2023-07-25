@@ -14,7 +14,7 @@ app.use(cors());
 // routes
 app.use("/api/checkout", paymentRoute)
 
-app.use('/api/test', (req, res, next) => {
+app.get('/test', (req, res, next) => {
     res.status(200).send({
         success: true,
         message: 'all ok'
