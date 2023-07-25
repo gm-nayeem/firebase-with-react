@@ -12,7 +12,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 const App = () => {
 
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState({});
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState({});
 
