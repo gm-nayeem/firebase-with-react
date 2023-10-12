@@ -12,8 +12,6 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-// routes
-app.use("/api/users", userRoute);
 
 app.get('/', (req, res) => {
     res.status(200).send({
@@ -21,6 +19,9 @@ app.get('/', (req, res) => {
         message: 'all ok'
     });
 });
+
+// routes
+app.use("/api/users", userRoute);
 
 // server error handle
 app.use((err, req, res, next) => {
