@@ -5,6 +5,7 @@ const cors = require('cors')
 require('./config/dbConn');
 
 const userRoute = require('./routers/userRoute');
+const folderRoute = require('./routers/folderRoute');
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 // routes
 app.use("/api/users", userRoute);
+app.use("/api/folders", folderRoute);
 
 // server error handle
 app.use((err, req, res, next) => {
