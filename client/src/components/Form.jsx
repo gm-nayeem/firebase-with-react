@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-const url = 'http://localhost:4000/api';
+const url = 'https://firebase-with-react.vercel.app/api';
+// const url = 'http://localhost:4000/api';
 import axios from 'axios';
 
 const Form = ({addUser}) => {

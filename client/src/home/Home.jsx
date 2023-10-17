@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import '../app.scss';
 import Form from '../components/Form';
-const url = 'http://localhost:4000/api';
+const url = 'https://firebase-with-react.vercel.app/api';
+// const url = 'http://localhost:4000/api';
 import axios from 'axios';
 
 const Home = () => {
