@@ -1,4 +1,4 @@
-import {publicRequest} from './makeRequest';
+import { publicRequest } from './makeRequest';
 
 export const createFolder = async (parentId, foldername) => {
     try {
@@ -22,10 +22,11 @@ export const getFolders = async () => {
     }
 };
 
-export const deleteFolder = async () => {
+export const deleteFolder = async (id) => {
     try {
         const res = await publicRequest.delete(`/folders/${id}`);
         console.log("delete: ", res.data);
+        return res.data;
     } catch (err) {
         console.log('Delete error', err);
     }

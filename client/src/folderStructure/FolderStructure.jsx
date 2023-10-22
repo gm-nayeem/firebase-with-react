@@ -15,7 +15,6 @@ const folderStructure = () => {
     useEffect(() => {
         const fetchFolders = async () => {
             const res = await getFolders();
-            console.log('res: ', res);
             res?.success && setFolders(res?.folders);
         }
         fetchFolders();
@@ -56,14 +55,14 @@ const folderStructure = () => {
     // add folder
     const addFolderById = (arr, targetId, newFolder) => {
         for (let i = 0; i < arr.length; i++) {
-            if (arr[i].id === targetId) {
-                if (arr[i].subfolders) {
-                    arr[i].subfolders.push(newFolder);
+            if (arr[i]._id === targetId) {
+                if (arr[i].subfname) {
+                    arr[i].subfname.push(newFolder);
                     return true;
                 }
             }
-            if (arr[i].subfolders) {
-                if (addFolderById(arr[i].subfolders, targetId, newFolder)) {
+            if (arr[i].subfname) {
+                if (addFolderById(arr[i].subfname, targetId, newFolder)) {
                     return true;
                 }
             }
@@ -78,60 +77,57 @@ const folderStructure = () => {
 
         const res = await createFolder(folderId, folderName);
 
-
-
         if (!res?.success) {
             return alert('Something went wrong!');
         }
 
-        // const newFolder = {
-        //     id: 55,
-        //     name: folderName,
-        //     subfolders: [],
-        // }
+        const updatedArray = [...folders];
 
-        // const updatedArray = [...folders];
-
-        // if (folderId === 'root') {
-        //     updatedArray.push(newFolder);
-        //     setFolders(updatedArray);
-        // }
-
-        // addFolderById(updatedArray, folderId, newFolder);
-        // setFolders(updatedArray);
+        if (folderId === 'root') {
+            updatedArray.push(res?.folder);
+            setFolders(updatedArray);
+        }
+        addFolderById(updatedArray, folderId, res?.folder);
+        setFolders(updatedArray);
     };
 
     // remove folder
     const removeFolderById = (arr, targetId) => {
         for (let i = 0; i < arr.length; i++) {
-            if (arr[i].id === targetId) {
+            if (arr[i]._id === targetId) {
                 arr.splice(i, 1);
                 return true;
             }
-            if (arr[i].subfolders.length > 0) {
-                if (removeFolderById(arr[i].subfolders, targetId)) {
+            if (arr[i].subfname.length > 0) {
+                if (removeFolderById(arr[i].subfname, targetId)) {
                     return true;
                 }
             }
         }
         return false;
     }
-    const handleDelete = () => {
-        const updatedArray = [...folders];
+    const handleDelete = async () => {
+        if (!folderInfo.folderId) return alert('Folder id must be required!');
 
-        if (!folderInfo.folderId) return alert('Folder id must be required!')
+        setShowDeleteContainer(false);
+
+        const res = await deleteFolder(folderInfo.folderId);
+        if (!res?.success) {
+            return alert('Something went wrong!');
+        }
+
+        const updatedArray = [...folders];
 
         removeFolderById(updatedArray, folderInfo.folderId);
         setFolders(updatedArray);
-        setShowDeleteContainer(false);
     };
 
     // render folders
-    const renderFolder = (subFolder) => {
+    const renderFolder = (subfname) => {
         return (
             <ul>
                 {
-                    subFolder.map(sf => (
+                    subfname.map(sf => (
                         <li key={sf._id}>
                             <div className="folder">
                                 <div className='title' onClick={() => toggleFolder(sf._id)}>
@@ -142,7 +138,7 @@ const folderStructure = () => {
                                             <BiRightArrow className='icon' />
                                         )
                                     }
-                                    <div className="folder-name">{sf.foldername}</div>
+                                    <div className="folder-name">{sf.fname}</div>
                                 </div>
 
                                 <button onClick={() => {
@@ -152,7 +148,7 @@ const folderStructure = () => {
                                 }}>+New</button>
                                 <button onClick={() => {
                                     setFolderInfo({
-                                        folderName: sf.foldername,
+                                        folderName: sf.fname,
                                         folderId: sf._id
                                     })
                                     setShowAddContainer(false)
@@ -160,8 +156,8 @@ const folderStructure = () => {
                                 }}>Delete</button>
                             </div>
                             {
-                                sf.subfolders.length > 0 && isActive(sf._id) ? (
-                                    renderFolder(sf.subfolders)
+                                sf.subfname?.length > 0 && isActive(sf._id) ? (
+                                    renderFolder(sf.subfname)
                                 ) : (
                                     isActive(sf._id) ? (
                                         <ul>
@@ -211,7 +207,7 @@ const folderStructure = () => {
                                                 <BiRightArrow className='icon' />
                                             )
                                         }
-                                        <div className="folder-name">{folder.foldername}</div>
+                                        <div className="folder-name">{folder.fname}</div>
                                     </div>
 
                                     <button onClick={() => {
@@ -221,7 +217,7 @@ const folderStructure = () => {
                                     }}>+New</button>
                                     <button onClick={() => {
                                         setFolderInfo({
-                                            folderName: folder.foldername,
+                                            folderName: folder.fname,
                                             folderId: folder._id
                                         })
                                         setShowAddContainer(false)
@@ -229,8 +225,8 @@ const folderStructure = () => {
                                     }}>Delete</button>
                                 </div>
                                 {
-                                    folder?.subfolders?.length > 0 && isActive(folder._id) ? (
-                                        renderFolder(folder?.subfolders)
+                                    folder?.subfname?.length > 0 && isActive(folder._id) ? (
+                                        renderFolder(folder?.subfname)
                                     ) : (
                                         isActive(folder._id) ? (
                                             <ul>
